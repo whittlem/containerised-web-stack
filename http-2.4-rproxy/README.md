@@ -156,13 +156,7 @@ If you want to use any diagnostic tools like "ifconfig", "ping", or "curl", you 
 	apt update; apt install -y iputils-ping net-tools curl
 
 
-
-
-docker container rm -f $(docker container ls | awk {'print $1'} | egrep -v CONTAINER); docker image rm -f $(docker image ls | awk {'print $3'} | egrep -v IMAGE); docker container prune -f; docker build -t httpd-2.4-rproxy .; docker run -dit --name my-fe -p 8080:80 -p 8443:443 httpd-2.4-rproxy
-
-
-
-
+Notes:
 
 docker container rm -f $(docker container ls | grep my-fe | awk {'print $1'} | egrep -v CONTAINER);
 docker container prune -f;
