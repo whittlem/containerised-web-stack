@@ -28,6 +28,9 @@ Uncomment the following lines in the *my-httpd.conf*:
 	LoadModule ssl_module modules/mod_ssl.so
 	LoadModule proxy_module modules/mod_proxy.so
 	LoadModule proxy_http_module modules/mod_proxy_http.so
+	LoadModule rewrite_module modules/mod_rewrite.so
+	LoadModule auth_basic_module modules/mod_auth_basic.so
+	LoadModule authn_file_module modules/mod_authn_file.so
 	Include conf/extra/httpd-ssl.conf
 
 If you want to programmatically do this in your Dockerfile:
@@ -38,6 +41,9 @@ If you want to programmatically do this in your Dockerfile:
 			-e 's/^#\(LoadModule .*mod_socache_shmcb.so\)/\1/' \
 			-e 's/^#\(LoadModule .*mod_proxy.so\)/\1/' \
 			-e 's/^#\(LoadModule .*mod_proxy_http.so\)/\1/' \
+			-e 's/^#\(LoadModule .*mod_rewrite.so\)/\1/' \
+			-e 's/^#\(LoadModule .*mod_auth_basic.so\)/\1/' \
+			-e 's/^#\(LoadModule .*mod_authn_file.so\)/\1/' \
 			conf/httpd.conf
 
 Generate your server.key and server.crt for SSL in Apache 2.4:
@@ -155,13 +161,12 @@ If you want to use any diagnostic tools like "ifconfig", "ping", or "curl", you 
 
 	apt update; apt install -y iputils-ping net-tools curl
 
-
-Notes:
+#### 6. Fast Rebuild and Deploy
 
 docker container rm -f $(docker container ls | grep my-fe | awk {'print $1'} | egrep -v CONTAINER);
 docker container prune -f;
 docker image rm -f $(docker image ls | grep httpd-2.4-rproxy | awk {'print $3'});
 docker container prune -f;
 docker build -t httpd-2.4-rproxy .;
-docker run -dit --name my-fe --network=app_stack -p 8443:443 httpd-2.4-rproxy; 
+docker run -dit --name my-fe --network=app_stack -p 8443:443 httpd-2.4-rproxy;
 docker container exec -it my-fe /bin/bash;
