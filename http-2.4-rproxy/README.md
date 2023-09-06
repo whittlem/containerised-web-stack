@@ -168,5 +168,5 @@ docker container prune -f;
 docker image rm -f $(docker image ls | grep httpd-2.4-rproxy | awk {'print $3'});
 docker container prune -f;
 docker build -t httpd-2.4-rproxy .;
-docker run -dit --name my-fe --network=app_stack -p 8443:443 httpd-2.4-rproxy;
+docker run -dit --name my-fe --network=app_stack -p 8080:80 -p 8443:443 httpd-2.4-rproxy;
 docker container exec -it my-fe /bin/bash;
