@@ -94,7 +94,7 @@ This will expose TCP 80 on the Docker container as TCP 8080 on the host, and TCP
 
 For troubleshooting you may want to run it interactively:
 
-	docker run -it --name my-fe -p 8080:80 -p 8443:443 httpd-2.4-rproxy
+	docker run -it --name securedial-fe -p 443:443 httpd-2.4-rproxy-reactjs
 
 The reverse proxy functionality is not running yet, but you should have a working Presentation web server serving a basic HTML page.
 
@@ -165,8 +165,16 @@ If you want to use any diagnostic tools like "ifconfig", "ping", or "curl", you 
 
 docker container rm -f $(docker container ls | grep my-fe | awk {'print $1'} | egrep -v CONTAINER);
 docker container prune -f;
-docker image rm -f $(docker image ls | grep httpd-2.4-rproxy | awk {'print $3'});
+docker image rm -f $(docker image ls | grep httpd-2.4-rproxy-reactjs | awk {'print $3'});
 docker container prune -f;
 docker build -t httpd-2.4-rproxy .;
-docker run -dit --name my-fe --network=app_stack -p 8080:80 -p 8443:443 httpd-2.4-rproxy;
+docker run -dit --name my-fe --network=app_stack -p 8080:80 -p 8443:443 httpd-2.4-rproxy-reactjs;
 docker container exec -it my-fe /bin/bash;
+
+---
+
+docker container rm -f $(docker ps -a | awk {'print $1'} | grep -v CONTAINER); docker image rm -f $(docker image ls | awk {'print $3'} | grep -v IMAGE); docker build -t httpd-2.4-rproxy-reactjs .; docker run -dit --name my-fe -network=app_stack -p 443:443 httpd-2.4-rproxy-reactjs
+
+---
+
+docker container rm -f $(docker ps -a | awk {'print $1'} | grep -v CONTAINER); docker image rm -f $(docker image ls | awk {'print $3'} | grep -v IMAGE); docker build -t httpd-2.4-rproxy-reactjs .; docker run -it --name my-fe -network=app_stack -p 443:443 httpd-2.4-rproxy-reactjs /bin/bash
